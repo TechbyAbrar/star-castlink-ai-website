@@ -1,0 +1,128 @@
+# =========================
+# PYTHON
+# =========================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+.env.bak
+env.bak/
+
+# Packaging / build artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+.installed.cfg
+*.egg
+
+# Type checking / linters
+.mypy_cache/
+.dmypy.json
+.pyre/
+.ruff_cache/
+
+# =========================
+# DJANGO
+# =========================
+# Databases
+db.sqlite3
+db.sqlite3-journal
+
+# Collected static & user uploads (server-generated)
+staticfiles/
+media/
+
+# Application logs
+*.log
+logs/
+
+# Local / secret settings
+local_settings.py
+settings_local.py
+core/local_settings.py
+
+# =========================
+# ENVIRONMENT VARIABLES
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# IDEs & EDITORS
+# =========================
+.vscode/
+.idea/
+*.iml
+*.code-workspace
+
+# =========================
+# TESTS / COVERAGE
+# =========================
+.coverage
+coverage.xml
+htmlcov/
+.pytest_cache/
+.tox/
+.nox/
+junit.xml
+*.cover
+*.py,cover
+
+# =========================
+# CACHE / TEMP FILES
+# =========================
+.cache/
+tmp/
+temp/
+*.swp
+*.swo
+*~
+
+# =========================
+# CELERY / REDIS
+# =========================
+*.rdb
+celerybeat-schedule
+celerybeat-schedule.*
+celerybeat.pid
+
+# =========================
+# DOCKER
+# =========================
+docker-compose.override.yml
+docker-compose.dev.yml
+.docker/
+*.pid
+
+# Docker build artifacts (scoped)
+docker/*.tar
+docker/*.bak
+docker/*.tmp
+
+# =========================
+# GUNICORN / NGINX
+# =========================
+*.sock
+run/
+
+# =========================
+# OS FILES
+# =========================
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# =========================
+# MISC
+# =========================
+__pypackages__/
