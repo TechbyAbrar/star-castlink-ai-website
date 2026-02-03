@@ -49,6 +49,9 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",    
     "drf_spectacular",
+    
+    #local apps
+    "account",
 ]
 
 AUTH_USER_MODEL = "account.UserAuth"
