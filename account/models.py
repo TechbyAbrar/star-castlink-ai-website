@@ -39,6 +39,7 @@ class UserAuth(AbstractBaseUser, PermissionsMixin):
         validators=[validate_image],
     )
     
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='Client')
     
     bio = models.TextField(null=True, blank=True)
 
