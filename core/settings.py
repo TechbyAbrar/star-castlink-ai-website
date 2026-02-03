@@ -51,6 +51,14 @@ INSTALLED_APPS = [
     "drf_spectacular",
 ]
 
+AUTH_USER_MODEL = "account.UserAuth"
+
+AUTHENTICATION_BACKENDS = [
+    "account.backends.EmailPhoneUsernameBackend", # custom backend
+    "django.contrib.auth.backends.ModelBackend",  # fallback
+]
+
+
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',  # CORS first
     'django.middleware.security.SecurityMiddleware',
