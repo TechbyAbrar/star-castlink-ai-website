@@ -1,6 +1,21 @@
 #account/serialziers.py
 from rest_framework import serializers
 from .models import UserAuth
+from django.utils import timezone
+
+from rest_framework import serializers
+from django.contrib.auth.hashers import make_password
+
+from django.contrib.auth import get_user_model
+User = get_user_model()
+
+from .utils import (
+    generate_username,
+    send_otp_email,
+    generate_tokens_for_user,
+    generate_otp,
+    get_otp_expiry,
+)
 
 class UserInfoSerializer(serializers.ModelSerializer):
     profile_pic_url = serializers.SerializerMethodField()
@@ -38,20 +53,6 @@ class UserInfoSerializer(serializers.ModelSerializer):
         url = obj.profile_pic.url
         return request.build_absolute_uri(url) if request else url
 
-
-from rest_framework import serializers
-from django.contrib.auth.hashers import make_password
-
-from django.contrib.auth import get_user_model
-User = get_user_model()
-
-from .utils import (
-    generate_username,
-    send_otp_email,
-    generate_tokens_for_user,
-    generate_otp,
-    get_otp_expiry,
-)
 
 
 class SignupSerializer(serializers.Serializer):
@@ -111,3 +112,31 @@ class SignupSerializer(serializers.Serializer):
         send_otp_email(user.email, message)
 
         return user
+
+
+
+class VerifyOTPSerializer(serializers.Serializer):
+    otp = serializers.CharField(max_length=6, write_only=True)
+
+    def validate(self, data):
+        try:
+            user = User.objects.get(otp=data["otp"], otp_expired_at__gte=timezone.now())
+        except User.DoesNotExist:
+            raise serializers.ValidationError({"otp": "Invalid or expired OTP."})
+
+        if user.is_verified:
+            raise serializers.ValidationError({"otp": "User already verified."})
+
+        data["user"] = user
+        return data
+
+    def save(self, **kwargs):
+        user = self.validated_data["user"]
+        from django.db import transaction
+        with transaction.atomic():
+            user.is_verified = True
+            user.otp = None
+            user.otp_expired = None
+            user.save(update_fields=["is_verified", "otp", "otp_expired_at"])
+        return user
+    

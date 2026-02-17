@@ -5,7 +5,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .serializers import SignupSerializer
+from .serializers import SignupSerializer, VerifyOTPSerializer
 from .utils import generate_tokens_for_user
 
 
@@ -34,4 +34,35 @@ class SignupAPIView(APIView):
             },
             status=status.HTTP_201_CREATED,
         )
+        
+
+class VerifyOTPAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = VerifyOTPSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+
+        tokens = generate_tokens_for_user(user)
+
+        return Response(
+            {
+                "success": True,
+                "message": "OTP verified successfully.",
+                "data": {
+                    "tokens": {
+                        "access": tokens["access"],
+                    },
+                    "user": {
+                        "id": user.user_id,
+                        "email": user.email,
+                        "full_name": user.full_name,
+                        "is_verified": user.is_verified,
+                    },
+                },
+            },
+            status=status.HTTP_200_OK,
+        )
+        
         
