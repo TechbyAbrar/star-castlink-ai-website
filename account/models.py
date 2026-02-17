@@ -2,8 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.utils import timezone
 from .managers import CustomUserManager
-from .utils import get_otp_expiry, validate_image
-from .services import generate_otp
+from .utils import get_otp_expiry, validate_image, generate_otp
+
 
 
 class UserAuth(AbstractBaseUser, PermissionsMixin):

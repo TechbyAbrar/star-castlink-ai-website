@@ -2,7 +2,7 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.db import transaction
 from django.utils.translation import gettext_lazy as _
 
-from .services import generate_username
+from .utils import generate_username
 
 
 class CustomUserManager(BaseUserManager):
