@@ -42,6 +42,12 @@ class UserAuth(AbstractBaseUser, PermissionsMixin):
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='Client')
     
     bio = models.TextField(null=True, blank=True)
+    
+    company = models.CharField(max_length=255, null=True, blank=True)
+    website = models.URLField(null=True, blank=True)
+    
+    country = models.CharField(max_length=100, null=True, blank=True)
+    city = models.CharField(max_length=100, null=True, blank=True)
 
     otp = models.CharField(max_length=6, null=True, blank=True)
     otp_expired_at = models.DateTimeField(null=True, blank=True)
