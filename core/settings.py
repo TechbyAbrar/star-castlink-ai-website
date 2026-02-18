@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     
     #local apps
     "account",
+    'privacy',
 ]
 
 AUTH_USER_MODEL = "account.UserAuth"
