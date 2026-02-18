@@ -18,3 +18,22 @@ class IsSuperuserOrReadOnly(BasePermission):
             return True
         user = request.user
         return bool(user and user.is_authenticated and user.is_superuser)
+from rest_framework.permissions import BasePermission
+
+
+class IsAgent(BasePermission):
+    def has_permission(self, request, view):
+        return (
+            request.user
+            and request.user.is_authenticated
+            and request.user.role == "Agent"
+        )
+
+
+class IsClient(BasePermission):
+    def has_permission(self, request, view):
+        return (
+            request.user
+            and request.user.is_authenticated
+            and request.user.role == "Client"
+        )
