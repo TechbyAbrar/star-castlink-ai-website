@@ -10,6 +10,7 @@ urlpatterns = [
     
     #local
     path('v1/account/', include('account.urls')),
+    path('v1/privacy/', include('privacy.urls')),
 ]
 
 
