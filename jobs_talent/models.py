@@ -1,15 +1,12 @@
-from django.db import models
+from django.conf import settings
 from django.contrib.auth import get_user_model
-User = get_user_model()
-# Create your models here.
-from django.conf import settings
-from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
-
-from django.conf import settings
-from django.db import models
-from django.utils import timezone
 from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator, MaxValueValidator
+from django.db import models, transaction
+from django.db.models import Q
+from django.utils import timezone
+
+User = get_user_model()
 
 #job model
 class Job(models.Model):
@@ -131,4 +128,68 @@ class Talent(models.Model):
     def __str__(self):
         return f"{self.name} (Talent #{self.talent_id})"
     
-    
+#talent images
+
+class TalentImage(models.Model):
+    image_id = models.AutoField(primary_key=True)
+
+    talent = models.ForeignKey(
+        "Talent",
+        on_delete=models.CASCADE,
+        related_name="images",
+    )
+
+    image = models.ImageField(upload_to="talents/images/")
+    is_primary = models.BooleanField(default=False)
+    sort_order = models.PositiveIntegerField(default=0)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-is_primary", "sort_order", "-created_at"]
+        indexes = [
+            models.Index(fields=["talent", "is_primary"]),
+            models.Index(fields=["talent", "sort_order"]),
+        ]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["talent"],
+                condition=Q(is_primary=True),
+                name="unique_primary_image_per_talent",
+            )
+        ]
+
+    def clean(self):
+        if self.sort_order < 0:
+            raise ValidationError("sort_order must be >= 0")
+
+    def __str__(self):
+        # NOTE: for FK, Django auto provides `talent_id`
+        return f"TalentImage(talent={self.talent_id}, primary={self.is_primary}, order={self.sort_order})"
+
+    def save(self, *args, **kwargs):
+        """
+        - If it's the first image for this talent, auto-make it primary.
+        - If saving with is_primary=True, unset previous primary safely.
+        """
+        with transaction.atomic():
+            is_new = self.pk is None
+
+            # auto-primary for first image
+            if is_new and not TalentImage.objects.filter(talent=self.talent).exists():
+                self.is_primary = True
+
+            # if setting primary, unset others
+            if self.is_primary:
+                TalentImage.objects.filter(
+                    talent=self.talent,
+                    is_primary=True
+                ).exclude(pk=self.pk).update(is_primary=False)
+
+            super().save(*args, **kwargs)
+
+    def set_as_primary(self):
+        with transaction.atomic():
+            TalentImage.objects.filter(talent=self.talent, is_primary=True).exclude(pk=self.pk).update(is_primary=False)
+            self.is_primary = True
+            self.save(update_fields=["is_primary"])
