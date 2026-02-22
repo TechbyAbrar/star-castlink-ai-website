@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     #local apps
     "account",
     'privacy',
+    'jobs_talent',
 ]
 
 AUTH_USER_MODEL = "account.UserAuth"
