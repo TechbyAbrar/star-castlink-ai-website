@@ -89,6 +89,7 @@ class Talent(models.Model):
     )
 
     name = models.CharField(max_length=255)
+    role = models.CharField(max_length=255, blank=True)
 
     dob = models.DateField(null=True, blank=True)
 
@@ -119,7 +120,7 @@ class Talent(models.Model):
     class Meta:
         ordering = ["-created_at"]
         indexes = [
-            models.Index(fields=["agent"]),
+            models.Index(fields=["added_by_agent"]),
             models.Index(fields=["is_available"]),
             models.Index(fields=["country"]),
             models.Index(fields=["gender"]),
