@@ -6,6 +6,7 @@ from django.db import models, transaction
 from django.db.models import Q
 from django.utils import timezone
 
+
 User = get_user_model()
 
 #job model
@@ -20,13 +21,13 @@ class Job(models.Model):
     job_id = models.AutoField(primary_key=True)
 
     job_created_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        settings.AUTH_USER_MODEL,    #client who created the job     
         on_delete=models.CASCADE,
         related_name="jobs_created",
     )
     
     job_assigned_to = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        settings.AUTH_USER_MODEL,   #jobs assigned to an agent
         on_delete=models.SET_NULL,
         related_name="jobs_assigned",
         null=True, blank=True,

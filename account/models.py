@@ -43,6 +43,7 @@ class UserAuth(AbstractBaseUser, PermissionsMixin):
     
     bio = models.TextField(null=True, blank=True)
     
+    agency_name = models.CharField(max_length=255, null=True, blank=True)       #for agents and clients with agencies
     company = models.CharField(max_length=255, null=True, blank=True)
     website = models.URLField(null=True, blank=True)
     
